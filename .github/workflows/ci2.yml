@@ -122,3 +122,41 @@ jobs:
 
       - name: Test
         run: yarn affected:test --base=remotes/origin/main
+
+  deploy-prod:
+    name: Deploy Production
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || github.event_name == 'push') }}
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Download Build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dashboard
+          path: ./dashboard/
+
+      - name: Deploy Production
+        run: echo "Production Deployed!!"
+
+  deploy-staging:
+    name: Deploy Staging
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    needs: build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Download Build artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: dashboard
+          path: ./dashboard/
+
+      - name: Deploy Staging
+        run: echo "Staging Deployed!!"
